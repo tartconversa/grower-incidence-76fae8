@@ -1,0 +1,559 @@
+{
+  "title": "竹料采购扩张的农户净收益与外溢分析",
+  "encoding": "UTF-8",
+  "delimiter": ",",
+  "missing": "",
+  "synthetic": true,
+  "tables": [
+    {
+      "name": "households",
+      "description": "匿名主体及预先登记的分组。",
+      "columns": [
+        {
+          "name": "household_id",
+          "type": "string",
+          "description": "主体",
+          "nullable": true
+        },
+        {
+          "name": "village",
+          "type": "string",
+          "description": "村",
+          "nullable": true
+        },
+        {
+          "name": "vulnerable",
+          "type": "boolean",
+          "description": "困难经营户",
+          "nullable": true
+        },
+        {
+          "name": "member_coop",
+          "type": "string",
+          "description": "所属合作社",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "household_id"
+      ],
+      "references": [],
+      "path": "data/households.csv",
+      "row_count": 96,
+      "sha256": "b38bf08b11eefa434e37e3b437a0f9fe2135620d91c9fde65809602e3126ee8c"
+    },
+    {
+      "name": "plots",
+      "description": "地块条件与历史用途。",
+      "columns": [
+        {
+          "name": "plot_id",
+          "type": "string",
+          "description": "地块",
+          "nullable": true
+        },
+        {
+          "name": "village",
+          "type": "string",
+          "description": "村",
+          "nullable": true
+        },
+        {
+          "name": "area_mu",
+          "type": "number",
+          "description": "亩",
+          "nullable": true
+        },
+        {
+          "name": "slope_pct",
+          "type": "number",
+          "description": "坡度百分比",
+          "nullable": true
+        },
+        {
+          "name": "road_km",
+          "type": "number",
+          "description": "运距",
+          "nullable": true
+        },
+        {
+          "name": "prior_use",
+          "type": "string",
+          "description": "原用途",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "plot_id"
+      ],
+      "references": [],
+      "path": "data/plots.csv",
+      "row_count": 96,
+      "sha256": "79d63b57651bebc35b9603ed7cf35987a3144e9b69172719ef6531a62dcad77d"
+    },
+    {
+      "name": "rights",
+      "description": "经营权与代收随时间变化。更正进入后按其可知时点解释。",
+      "columns": [
+        {
+          "name": "right_id",
+          "type": "string",
+          "description": "记录",
+          "nullable": true
+        },
+        {
+          "name": "plot_id",
+          "type": "string",
+          "description": "地块",
+          "nullable": true
+        },
+        {
+          "name": "household_id",
+          "type": "string",
+          "description": "主体",
+          "nullable": true
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "权利角色",
+          "nullable": true
+        },
+        {
+          "name": "start",
+          "type": "date",
+          "description": "生效",
+          "nullable": true
+        },
+        {
+          "name": "end",
+          "type": "date",
+          "description": "失效",
+          "nullable": true
+        },
+        {
+          "name": "available_at",
+          "type": "datetime",
+          "description": "可知时刻",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "right_id"
+      ],
+      "references": [
+        {
+          "column": "plot_id",
+          "target_table": "plots",
+          "target_column": "plot_id"
+        },
+        {
+          "column": "household_id",
+          "target_table": "households",
+          "target_column": "household_id"
+        }
+      ],
+      "path": "data/rights.csv",
+      "row_count": 194,
+      "sha256": "b60287d1a7301a7bc81d25301110cf71af3c0472b83264be7b89338695380145"
+    },
+    {
+      "name": "contracts",
+      "description": "真实支付规则，fixed 的 value 单位为元每月，share 为销售比例，deduct_first 为先扣项目。",
+      "columns": [
+        {
+          "name": "contract_id",
+          "type": "string",
+          "description": "合同",
+          "nullable": true
+        },
+        {
+          "name": "plot_id",
+          "type": "string",
+          "description": "地块",
+          "nullable": true
+        },
+        {
+          "name": "beneficiary",
+          "type": "string",
+          "description": "受益主体",
+          "nullable": true
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "description": "分配方式",
+          "nullable": true
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "description": "金额或比例",
+          "nullable": true
+        },
+        {
+          "name": "priority",
+          "type": "integer",
+          "description": "优先级",
+          "nullable": true
+        },
+        {
+          "name": "start",
+          "type": "date",
+          "description": "开始",
+          "nullable": true
+        },
+        {
+          "name": "end",
+          "type": "date",
+          "description": "结束",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "contract_id"
+      ],
+      "references": [],
+      "path": "data/contracts.csv",
+      "row_count": 97,
+      "sha256": "8ef0fe34a7f23bf0aed5c8e542ac3a909af481cb986714f9fcfda9e0a28cea47"
+    },
+    {
+      "name": "payments",
+      "description": "销售代收、应收和费用均为独立经济记录。fee 可由补单更正，不使用负数隐式抵销。",
+      "columns": [
+        {
+          "name": "payment_id",
+          "type": "string",
+          "description": "支付",
+          "nullable": true
+        },
+        {
+          "name": "month",
+          "type": "integer",
+          "description": "月份索引",
+          "nullable": true
+        },
+        {
+          "name": "plot_id",
+          "type": "string",
+          "description": "地块",
+          "nullable": true
+        },
+        {
+          "name": "recipient",
+          "type": "string",
+          "description": "收款方",
+          "nullable": true
+        },
+        {
+          "name": "payer",
+          "type": "string",
+          "description": "费用承担人",
+          "nullable": true
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "description": "现金应收费用",
+          "nullable": true
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "description": "金额",
+          "nullable": true
+        },
+        {
+          "name": "activity",
+          "type": "string",
+          "description": "用途",
+          "nullable": true
+        },
+        {
+          "name": "available_at",
+          "type": "datetime",
+          "description": "可知时刻",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "payment_id"
+      ],
+      "references": [
+        {
+          "column": "plot_id",
+          "target_table": "plots",
+          "target_column": "plot_id"
+        }
+      ],
+      "path": "data/payments.csv",
+      "row_count": 6912,
+      "sha256": "1841b7cd3bf2f4938dbb7e0e65d2d56d6c276ea8213484c59e89f1110c3dc26a"
+    },
+    {
+      "name": "coverage",
+      "description": "收购点分期开放及选点条件。",
+      "columns": [
+        {
+          "name": "village",
+          "type": "string",
+          "description": "村",
+          "nullable": true
+        },
+        {
+          "name": "opening_month",
+          "type": "integer",
+          "description": "开点月份",
+          "nullable": true
+        },
+        {
+          "name": "road_upgrade_month",
+          "type": "integer",
+          "description": "道路改造月",
+          "nullable": true
+        },
+        {
+          "name": "application_score",
+          "type": "number",
+          "description": "申报分数",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "village"
+      ],
+      "references": [],
+      "path": "data/coverage.csv",
+      "row_count": 8,
+      "sha256": "736ec20cb3c5a04b245a94696f0df96ff28926e3a5796acf4d92ff8527427f48"
+    },
+    {
+      "name": "processor_links",
+      "description": "村与共同加工商按事前交易量形成的联系。weight 是交易占比。",
+      "columns": [
+        {
+          "name": "link_id",
+          "type": "string",
+          "description": "联系",
+          "nullable": true
+        },
+        {
+          "name": "village",
+          "type": "string",
+          "description": "村",
+          "nullable": true
+        },
+        {
+          "name": "processor",
+          "type": "string",
+          "description": "加工商",
+          "nullable": true
+        },
+        {
+          "name": "weight",
+          "type": "number",
+          "description": "占比",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "link_id"
+      ],
+      "references": [],
+      "path": "data/processor_links.csv",
+      "row_count": 16,
+      "sha256": "89133478bf1a709f1462b4b33ae857ffe58da0a88a2db4afdbc3bfe9c7923343"
+    },
+    {
+      "name": "supplement",
+      "description": "补充费用与转包资料进入的时间，target_payment 指被更正支付。",
+      "columns": [
+        {
+          "name": "notice_id",
+          "type": "string",
+          "description": "补单",
+          "nullable": true
+        },
+        {
+          "name": "target_payment",
+          "type": "string",
+          "description": "支付",
+          "nullable": true
+        },
+        {
+          "name": "replacement_amount",
+          "type": "number",
+          "description": "新金额",
+          "nullable": true
+        },
+        {
+          "name": "available_at",
+          "type": "datetime",
+          "description": "可知时刻",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "notice_id"
+      ],
+      "references": [
+        {
+          "column": "target_payment",
+          "target_table": "payments",
+          "target_column": "payment_id"
+        }
+      ],
+      "path": "data/supplement.csv",
+      "row_count": 2,
+      "sha256": "49bc28f89a4482a0a26cc7cb90563626c1efc1140aed93c288a13becca403637"
+    },
+    {
+      "name": "expansion",
+      "description": "尚未形成真实效果的扩面条件。",
+      "columns": [
+        {
+          "name": "proposal_id",
+          "type": "string",
+          "description": "提案",
+          "nullable": true
+        },
+        {
+          "name": "village",
+          "type": "string",
+          "description": "村",
+          "nullable": true
+        },
+        {
+          "name": "new_collection",
+          "type": "boolean",
+          "description": "新点",
+          "nullable": true
+        },
+        {
+          "name": "price_delta",
+          "type": "number",
+          "description": "价格变化比例",
+          "nullable": true
+        },
+        {
+          "name": "processing_fee_delta",
+          "type": "number",
+          "description": "加工费用变化比例",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "proposal_id"
+      ],
+      "references": [],
+      "path": "data/expansion.csv",
+      "row_count": 2,
+      "sha256": "3bf15c052a960627d5d6d8c60a9f79b590a95c5d83971be09cec4facdae1b64a"
+    },
+    {
+      "name": "household_receipts",
+      "description": "合作社对农户分付，用于区别代收与最终到账。",
+      "columns": [
+        {
+          "name": "receipt_id",
+          "type": "string",
+          "description": "分付",
+          "nullable": true
+        },
+        {
+          "name": "payment_id",
+          "type": "string",
+          "description": "对应合作社现金",
+          "nullable": true
+        },
+        {
+          "name": "household_id",
+          "type": "string",
+          "description": "最终收款人",
+          "nullable": true
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "description": "元",
+          "nullable": true
+        },
+        {
+          "name": "paid_at",
+          "type": "datetime",
+          "description": "实际支付",
+          "nullable": true
+        },
+        {
+          "name": "available_at",
+          "type": "datetime",
+          "description": "可知",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "receipt_id"
+      ],
+      "references": [
+        {
+          "column": "payment_id",
+          "target_table": "payments",
+          "target_column": "payment_id"
+        },
+        {
+          "column": "household_id",
+          "target_table": "households",
+          "target_column": "household_id"
+        }
+      ],
+      "path": "data/household_receipts.csv",
+      "row_count": 1976,
+      "sha256": "718f26abf420d2bbceeb5e778d6caebaee2a78720c18f7e56ab536d3f5b85894"
+    },
+    {
+      "name": "cost_changes",
+      "description": "新收购点选择与劳动力构成的事前背景。",
+      "columns": [
+        {
+          "name": "village",
+          "type": "string",
+          "description": "村",
+          "nullable": true
+        },
+        {
+          "name": "month",
+          "type": "integer",
+          "description": "时期",
+          "nullable": true
+        },
+        {
+          "name": "labor_yuan_day",
+          "type": "number",
+          "description": "日工费",
+          "nullable": true
+        },
+        {
+          "name": "population_operator",
+          "type": "integer",
+          "description": "经营人口",
+          "nullable": true
+        },
+        {
+          "name": "road_status",
+          "type": "string",
+          "description": "道路状态",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "village",
+        "month"
+      ],
+      "references": [],
+      "path": "data/cost_changes.csv",
+      "row_count": 192,
+      "sha256": "2579e0a6fadc397c9cacd43e27d3263ab3a77d8798b9ca95a978dcf8d38dc4c5"
+    }
+  ]
+}
