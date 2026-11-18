@@ -155,7 +155,7 @@
       ],
       "path": "data/rights.csv",
       "row_count": 194,
-      "sha256": "b60287d1a7301a7bc81d25301110cf71af3c0472b83264be7b89338695380145"
+      "sha256": "3fc2bfd952249276043a3c9548088de30cef4d86a704dde19fda573ac9c11308"
     },
     {
       "name": "contracts",
@@ -216,7 +216,7 @@
       "references": [],
       "path": "data/contracts.csv",
       "row_count": 97,
-      "sha256": "8ef0fe34a7f23bf0aed5c8e542ac3a909af481cb986714f9fcfda9e0a28cea47"
+      "sha256": "acc111abf796c1b2bdce4e850633f7ec6d5a729cdeb0768da8f1368d65936d8b"
     },
     {
       "name": "payments",
@@ -289,7 +289,7 @@
       ],
       "path": "data/payments.csv",
       "row_count": 6912,
-      "sha256": "1841b7cd3bf2f4938dbb7e0e65d2d56d6c276ea8213484c59e89f1110c3dc26a"
+      "sha256": "8ac0ce3215733282f111a42adbde0b6f17e3a4fd0b6e48d72ad05310a854fb10"
     },
     {
       "name": "coverage",
@@ -554,6 +554,73 @@
       "path": "data/cost_changes.csv",
       "row_count": 192,
       "sha256": "2579e0a6fadc397c9cacd43e27d3263ab3a77d8798b9ca95a978dcf8d38dc4c5"
+    },
+    {
+      "name": "labor",
+      "description": "采收劳动及承担关系，amount 是独立劳动成本，不与 payments.fee 重复。",
+      "columns": [
+        {
+          "name": "labor_id",
+          "type": "string",
+          "description": "劳动",
+          "nullable": true
+        },
+        {
+          "name": "plot_id",
+          "type": "string",
+          "description": "地块",
+          "nullable": true
+        },
+        {
+          "name": "month",
+          "type": "integer",
+          "description": "结算期",
+          "nullable": true
+        },
+        {
+          "name": "worker",
+          "type": "string",
+          "description": "劳动主体",
+          "nullable": true
+        },
+        {
+          "name": "payer",
+          "type": "string",
+          "description": "承担主体",
+          "nullable": true
+        },
+        {
+          "name": "days",
+          "type": "number",
+          "description": "工日",
+          "nullable": true
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "description": "劳动成本元",
+          "nullable": true
+        },
+        {
+          "name": "available_at",
+          "type": "datetime",
+          "description": "可知",
+          "nullable": true
+        }
+      ],
+      "key": [
+        "labor_id"
+      ],
+      "references": [
+        {
+          "column": "plot_id",
+          "target_table": "plots",
+          "target_column": "plot_id"
+        }
+      ],
+      "path": "data/labor.csv",
+      "row_count": 576,
+      "sha256": "23d775e662fa7c54d2cb5050f496f73308396aef40362fc9a394485791e22e9f"
     }
   ]
 }
